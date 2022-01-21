@@ -9,12 +9,12 @@ class Comment extends Model
 {
     use HasFactory;
 
-    public function users()
+    public function user()
     {
-        return $this->hasMany('App\User');
+        return $this->belongsTo('App\Models\User');
     }
-    public function messages()
+    public function message()
     {
-        return $this->hasMany('App\Message');
+        return $this->belongsTo('App\Models\Message');
     }
 }

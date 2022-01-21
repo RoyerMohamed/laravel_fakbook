@@ -18,9 +18,16 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name', 
+        'pseudo', 
+        'image',
+        'role_id',  
         'email',
         'password',
+        'edit_first_name',
+        'edit_last_name', 
+        'edit_first_image'
     ];
 
     /**
@@ -42,18 +49,16 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-
-
     public function comments()
     {
-        return $this->hasMany('App\Comment');
+        return $this->hasMany('App\Models\Comment');
     }
     public function messages()
     {
-        return $this->hasMany('App\Message');
+        return $this->hasMany('App\Models\Message');
     }
-    public function roles()
+    public function role()
     {
-        return $this->hasMany('App\Role');
+        return $this->belongsTo('App\Models\Role');
     }
 }

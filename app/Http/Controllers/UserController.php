@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+use Auth;
+
 
 use Illuminate\Http\Request;
 
@@ -43,9 +45,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-        //
+    public function show(){
+        $user = Auth::user(); 
+        return view('user.account' , compact('user'));   
     }
 
     /**
@@ -54,9 +56,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-        //
+    public function edit(){
+        $user = Auth::user(); 
+        return view('user.edit' , compact('user')); 
     }
 
     /**
@@ -66,11 +68,21 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+    public function update( Request $request){
 
+        $request->validate([
+            'first_name' => 'required|min:3|max:50',
+            'last_name' => 'required|min:3|max:50',
+            'edit_image'=> 'min:3|max:50'
+        ]);
+
+        $user = Auth::user(); 
+        $user->first_name = $request->input('edit_first_name');  
+        $user->last_name = $request->input('edit_last_name');
+        $user->last_name = $request->input('edit_image');
+        $user->save();
+        return redirect()->route('account')->with('message', 'Your modification has well succes');
+    }
     /**
      * Remove the specified resource from storage.
      *
@@ -79,6 +91,6 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        
     }
 }

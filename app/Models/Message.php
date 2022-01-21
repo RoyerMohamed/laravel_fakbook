@@ -8,13 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Message extends Model
 {
     use HasFactory;
-    public function comment()
+    public function comments()
     {
-        return $this->belongsTo('App\Comment');
+        return $this->hasMany('App\Models\Comment');
     }
 
-    public function users()
+    public function user()
     {
-        return $this->hasMany('App\User');
+        return $this->belongsTo('App\Models\User');
     }
 }
