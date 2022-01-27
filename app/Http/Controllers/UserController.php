@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 use Auth;
-
+use Hash; 
+use Illuminate\Support\Facades\Password; 
 
 use Illuminate\Http\Request;
 
@@ -75,11 +76,10 @@ class UserController extends Controller
             'last_name' => 'required|min:3|max:50',
             'edit_image'=> 'min:3|max:50'
         ]);
-
         $user = Auth::user(); 
-        $user->first_name = $request->input('edit_first_name');  
-        $user->last_name = $request->input('edit_last_name');
-        $user->last_name = $request->input('edit_image');
+        $user->first_name = $request->input('first_name');  
+        $user->last_name = $request->input('last_name');
+        $user->image = $request->input('image');
         $user->save();
         return redirect()->route('account')->with('message', 'Your modification has well succes');
     }
@@ -92,5 +92,32 @@ class UserController extends Controller
     public function destroy($id)
     {
         
+    }
+
+
+    public function updatePassword(Request $request){
+        $user = Auth::user(); 
+
+        $request->validate([
+            'oldpassword' => 'required|min:3|max:50',
+            'newPassword' => 'required|min:3|max:50',
+            'ConfirmPassword'=>['required', Password::min(8)
+            ->letters()
+            ->mixedCase()
+            ->numbers()]
+        ]);
+        //verif 
+        if(Hash::check($request->input('oldpassword') , $user->password) ){
+            if($request->input('newPassword') !== $request->input('oldpassword')){
+                $user->password = Hash::make($request->input('newPassword'));  
+                $user->save();
+                return redirect()->route('account')->with('message', 'Your password change has well succes');
+            }else{
+                return redirect()->back()->withErrors(['password_error', 'Your current password and your old passeword are the same!']);
+            }           
+        }else{
+            return redirect()->back()->with('error', "Your current password is incorrect "); 
+        }
+
     }
 }

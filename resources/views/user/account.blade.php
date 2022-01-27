@@ -4,6 +4,15 @@
 <div class="container text-center">
 
     <h1>MY ACCOUNT</h1>
+
+    @if($user->image)
+    <div class="col">
+        <img src="{{ asset("images/$user->image") }} " class="m-1 rounded-circle" style="width: 10vw; height:10vw" alt="imageUtilisateur">
+    </div>
+    @else
+    <img src="{{ asset("images/default_user.jpg") }} " class="m-1 rounded-circle" style="width: 20vw; height:20vw" alt="imageUtilisateur">
+    @endif
+
     <div class="row text-center w-75">
         <div class="col">
         <form>

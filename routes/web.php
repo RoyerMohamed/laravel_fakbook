@@ -24,3 +24,4 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::get('/account', [App\Http\Controllers\UserController::class, 'show'])->name('account');
 Route::get('/account/edit', [App\Http\Controllers\UserController::class, 'edit'])->name('account-edit');
 Route::post('/account/update', [App\Http\Controllers\UserController::class, 'update'])->name('account-update');
+Route::post('/account/updatePassword', [App\Http\Controllers\UserController::class, 'updatePassword'])->name('account-updatePassword');
