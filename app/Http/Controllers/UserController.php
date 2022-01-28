@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 use Auth;
 use Hash; 
-use Illuminate\Support\Facades\Password; 
-
+use Illuminate\Validation\Rules\Password;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
