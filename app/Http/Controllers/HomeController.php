@@ -36,7 +36,12 @@ class HomeController extends Controller
      */
     public function home()
     {
-        $messages =  Message::all(); 
+        //nested eager loading
+        //$messages = Message::with('user', 'comments.user')->get();
+        
+        //eager loading
+        $messages =  Message::with('user')->get();
+        //dd($messages); 
         return view('home' , compact('messages'));
     }
 

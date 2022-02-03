@@ -30,27 +30,14 @@ class MessageController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show()
-    {
-       // $messages = Message::all();
-        //return view('message.messages' , compact('messages'));   
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit()
+    public function edit(Message $message)
     {
-        $messages = Message::all();
-        return view('message.messages' , compact('messages'));   
+        return view('message.edit' , compact('message'));   
     }
 
     /**
@@ -60,22 +47,23 @@ class MessageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Message $message)
     {
-        //
+         $request->validate([
+            "content" =>"required|min:10|max:500" , 
+            "tags"=>"required|min:3|max:50" , 
+        ]);
+        //verif 
+        if($request->input('content') !== $message->content ){
+            $message->content = $request->input('content'); 
+            $message->tags = $request->input('tags'); 
+            $message->image = $request->input('image'); 
+            $message->save();
+            return redirect()->route('home')->with('message', 'Your message have been updated with succes');
+        }else{
+            return redirect()->back()->with('error', "Your message is the same as the current one!"); 
+        }
     }
-
-
-
-    // public function add_message(Request $request){
-    //         $messages = Message::all(); 
-    //         var_dump($messages->content); 
-    //        // $messages->save(); 
-    //        //return redirect()->route('account')->with('message', 'Your message have been added with succes');
-    // }
-
-
-
 
 
     /**

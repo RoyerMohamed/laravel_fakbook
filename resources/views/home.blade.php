@@ -1,27 +1,84 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container w-50">
-    <form method="POST" action="{{ route('message.store') }}" class="d-flex">
-        @csrf
-        <div class="mb-3">
-            <label for="content" class="form-label">Enter your messge </label>
-            <input name="content" type="text" class="form-control" id="content" aria-describedby="emailHelp" placeholder="Enter your message">
+    <div class="container w-50">
+        <form method="POST" action="{{ route('message.store') }}" class="mb-5 mt-5">
+            @csrf
+            <div class="mb-3">
+                <label for="content" class="form-label">Enter your messge </label>
+                <input name="content" type="text" class="form-control" id="content" aria-describedby="emailHelp"
+                    placeholder="Message">
+            </div>
+
+            <div class="mb-3">
+                <label for="tags" class="form-label">Enter your tags</label>
+                <input name="tags" type="text" class="form-control" id="tags" placeholder="Tags">
+            </div>
+
+            <div class="mb-3">
+                <label for="image" class="form-label">Message picture</label>
+                <input type="text" id="image" name="image">
+            </div>
+
+            <input type="submit" class="btn btn-primary" value="Valider">
+
+        </form>
+        <div class="row pt-5">
+            @foreach ($messages as $message)
+                <div class="message">
+                    <div class="message-top">
+                        <div class="row">
+                            <!-- profile pic  -->
+                            @if ($message->user->image)
+                                <div class="col">
+                                    <img src="images/{{ $message->user->image }}" class="m-1 rounded-circle"
+                                        style="width: 3vw; height:3vw" alt="imageUtilisateur">
+                                </div>
+                            @else
+                                <div class="col">
+                                    <img src="{{ asset('images/default_user.jpg') }} " class="m-1 rounded-circle"
+                                        style="width: 3vw; height:3vw" alt="imageUtilisateur">
+                                </div>
+                            @endif
+                            <!-- userPseudo -->
+                            <div class="col">
+                                <h4>{{ $message->user->pseudo }}</h4>
+                            </div>
+                            <!-- date of post  -->
+                            <div class="col">
+                                <h4>{{ $message->user->created_at }}</h4>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="message-content">
+                        <!-- messages image -->
+                        <div class="content-image">
+                            @if ($message->user->image)
+                                <div class="col">
+                                    <img src="images/{{$message->image}}  " class="m-1 rounded-circle"
+                                        style="width: 3vw; height:3vw" alt="messages_image">
+                                </div>
+                            @else
+                                <div class="d-none">
+                                </div>
+                            @endif
+                        </div>
+                        <!-- messages content -->
+                        <div class="content-text">
+                            <p>{{ $message->content }}</p>
+                        </div>
+                        <!-- messages tages -->
+                        <div class="content-tags">
+                            <p>{{ $message->tags }} </p>
+                        </div>
+                        <a class="btn btn-primary" href="{{ route('message.edit', $message ) }}">{{ __('Modifier') }}</a>
+                        <a class="btn btn-primary" href="{{ route('comment.create' ) }}">{{ __('Add Comment') }}</a>
+
+                    </div>
+
+                </div>
+            @endforeach
         </div>
-        <div class="mb-3">
-            <label for="tags" class="form-label">Edit the message tags</label>
-            <input name="tags" type="text" class="form-control" id="tags">
-        </div>
-        <div class="mb-3">
-            <label for="image" class="form-label">Edit your message picture</label>
-            <input type="text" id="image" name="image">
-        </div>
-        <input type="submit" class="btn btn-primary" value="Valider">
-    </form>
-    @foreach ($messages as $message)
-    <div>
-        <p>{{ $message->content }}</p>
-    </div> 
-    @endforeach
-</div>
+    </div>
 @endsection
