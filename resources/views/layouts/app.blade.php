@@ -77,6 +77,13 @@
                         @endguest
                     </ul>
                 </div>
+                <div class="col">
+                    <form action="{{ route('message.search') }}" method="GET">
+                        @csrf
+                        <input type="text" placeholder="Search" name="search">
+                        <input type="submit" value="search" >
+                    </form>
+                </div>
             </div>
         </nav>
 

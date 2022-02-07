@@ -19,14 +19,6 @@ class CommentController extends Controller
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -46,7 +38,7 @@ class CommentController extends Controller
        $comment->tags = $request['tags']; 
        $comment->image = $request['image']; 
        $comment->user_id = $user->id; 
-       $comment->message_id = $id; 
+       $comment->message_id = $request['message_id']; 
        $comment->save(); 
        return redirect()->route('home')->with('message', 'Your comment have been added with succes');
     }
@@ -57,9 +49,10 @@ class CommentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show()
     {
-        //
+    
+        // return view('home' , compact("comment")); 
     }
 
     /**
@@ -68,11 +61,9 @@ class CommentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Message $message)
+    public function edit(Comment $comment)
     {
-        //
-        return view('comment.edit' , compact("message")); 
-        
+        return view('comment.edit' , compact("comment")); 
     }
 
     /**
@@ -82,9 +73,22 @@ class CommentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Comment $comment)
     {
-        //
+        $request->validate([
+            "content" =>"required|min:10|max:500" , 
+            "tags"=>"required|min:3|max:50" , 
+        ]);
+        //verif 
+        if($request->input('content') !== $comment->content ){
+            $comment->content = $request->input('content'); 
+            $comment->tags = $request->input('tags'); 
+            $comment->image = $request->input('image'); 
+            $comment->save();
+            return redirect()->route('home')->with('message', 'Your comment have been updated with succes');
+        }else{
+            return redirect()->back()->with('error', "Your comment is the same as the current one!"); 
+        }
     }
 
     /**
@@ -95,6 +99,8 @@ class CommentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $comment = Comment::find($id); 
+        $comment->delete();
+        return redirect()->route('home')->with('message', 'Your message have been updated with succes'); 
     }
 }

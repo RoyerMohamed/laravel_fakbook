@@ -30,7 +30,8 @@ Route::post('/account/updatePassword', [App\Http\Controllers\UserController::cla
 
                     //Message routes //
 Route::resource("/message" , App\Http\Controllers\MessageController::class ); 
+Route::get('/message/search', [App\Http\Controllers\MessageController::class , 'search'])->name('message.search');
 
 
                      //comment  routes //
-Route::resource("/comment" , App\Http\Controllers\CommentController::class )->except("create"); 
+Route::resource("/comment" , App\Http\Controllers\CommentController::class )->except("create");

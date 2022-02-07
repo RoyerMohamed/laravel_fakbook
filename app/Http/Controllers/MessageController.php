@@ -1,12 +1,27 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Message; 
+
+use App\Models\Message;
 use Illuminate\Http\Request;
-use Auth; 
+use Auth;
 
 class MessageController extends Controller
 {
+
+
+
+    public function show(Request $request)
+    {
+        $search = $request->input('search');
+        $messages = Message::where('content','LIKE', "%$search%")
+        ->orWhere('tags','LIKE', "%$search%")
+        ->with('user', 'comments.user')->latest()->paginate(10);
+        //dd($messages);
+        return view("home", compact("messages"));
+    }
+
+
     /**
      * Store a newly created resource in storage.
      *
@@ -16,17 +31,17 @@ class MessageController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            "content" =>"required|min:10|max:500" , 
-            "tags"=>"required|min:3|max:50"  , 
-        ]); 
-       $user = Auth::user(); 
-       $message = new Message(); 
-       $message->content = $request['content']; 
-       $message->tags = $request['tags']; 
-       $message->image = $request['image']; 
-       $message->user_id = $user->id; 
-       $message->save(); 
-       return redirect()->route('home')->with('message', 'Your message have been added with succes');
+            "content" => "required|min:10|max:500",
+            "tags" => "required|min:3|max:50",
+        ]);
+        $user = Auth::user();
+        $message = new Message();
+        $message->content = $request['content'];
+        $message->tags = $request['tags'];
+        $message->image = $request['image'];
+        $message->user_id = $user->id;
+        $message->save();
+        return redirect()->route('home')->with('message', 'Your message have been added with succes');
     }
 
     /**
@@ -37,7 +52,7 @@ class MessageController extends Controller
      */
     public function edit(Message $message)
     {
-        return view('message.edit' , compact('message'));   
+        return view('message.edit', compact('message'));
     }
 
     /**
@@ -49,21 +64,32 @@ class MessageController extends Controller
      */
     public function update(Request $request, Message $message)
     {
-         $request->validate([
-            "content" =>"required|min:10|max:500" , 
-            "tags"=>"required|min:3|max:50" , 
+        $request->validate([
+            "content" => "required|min:10|max:500",
+            "tags" => "required|min:3|max:50",
         ]);
         //verif 
-        if($request->input('content') !== $message->content ){
-            $message->content = $request->input('content'); 
-            $message->tags = $request->input('tags'); 
-            $message->image = $request->input('image'); 
+        if ($request->input('content') !== $message->content) {
+            $message->content = $request->input('content');
+            $message->tags = $request->input('tags');
+            $message->image = $request->input('image');
             $message->save();
             return redirect()->route('home')->with('message', 'Your message have been updated with succes');
-        }else{
-            return redirect()->back()->with('error', "Your message is the same as the current one!"); 
+        } else {
+            return redirect()->back()->with('error', "Your message is the same as the current one!");
         }
     }
+
+
+
+
+    // public function search(Request $request)
+    // {
+    //     $search = $request->input('search');
+    //     $message = Message::query()->where("%{$search}%");
+    //     dd($message);
+    //     return view("home", compact("messages"));
+    // }
 
 
     /**
@@ -74,6 +100,8 @@ class MessageController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $message = Message::find($id);
+        $message->delete();
+        return redirect()->back()->with('message', "Your message have been deleted with succes");
     }
 }
