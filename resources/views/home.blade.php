@@ -23,9 +23,9 @@
             <input type="submit" class="btn btn-primary" value="Valider">
 
         </form>
-        <div class="row pt-5">
+        <div class="row mt-5">
             @foreach ($messages as $message)
-                <div class="message">
+                <div class="message mt-5">
                     <div class="message-top">
                         <div class="row">
                             <!-- profile pic  -->
@@ -64,12 +64,14 @@
                                 </div>
                             @endif
                         </div>
+                        @can('delete' , $message)
                         <form method="POST" action="{{ route('message.destroy', $message->id) }}"
                             class="mb-5 mt-5">
                             @csrf
                             @method("DELETE")
                             <input type="submit" class="btn btn-primary" value="X">
                         </form>
+                        @endcan
                         <!-- messages content -->
                         <div class="content-text">
                             <p>{{ $message->content }}</p>
@@ -82,24 +84,26 @@
                         <div class="content-commentaire">
                             @foreach ($message->comments as $comment)
                                 <p>{{ $comment->content }}</p>
+                                @can('delete' , $comment)
                                 <form method="POST" action="{{ route('comment.destroy', $comment->id) }}"
                                     class="mb-5 mt-5">
                                     @csrf
                                     @method("DELETE")
                                     <input type="submit" class="btn btn-primary" value="X">
                                 </form>
+                                @endcan
                             @endforeach
                         </div>
 
                         <a class="btn btn-primary"
                             href="{{ route('message.edit', $message) }}">{{ __('Modifier') }}</a>
 
-                        <button class="btn btn-primary" onclick="myFunction({{ $message->id }})">Commenter</button>
+                        <button class="btn btn-primary" onclick="document.getElementById('comment-form{{ $message->id }}').style.display = 'block'">Commenter</button>
 
 
 
-                        <div id="comment-form{{ $message->id }}" class="text-center">
-                            <form method="POST" action="{{ route('comment.store') }}" class="mb-5 mt-5" style="display: none">
+                        <div id="comment-form{{ $message->id }}"  style="display: none" class="text-center mb-5">
+                            <form method="POST" action="{{ route('comment.store') }}" class="mb-5 mt-5">
                                 @csrf
                                 <div class="mb-3">
                                     <label for="content" class="form-label">Enter your comment </label>
@@ -122,13 +126,16 @@
                                 <input type="submit" class="btn btn-primary" value="Valider">
 
                             </form>
+                            <button class="btn btn-danger"
+                        onclick="document.getElementById('comment-form{{ $message->id }}').style.display = 'none'">
+                        Annuler
+                    </button>
                             @foreach ($message->comments as $comment)
                                 <a class="btn btn-primary"
                                     href="{{ route('comment.edit', $comment) }}">{{ __('Edit your comment ') }}</a>
                             @endforeach
                         </div>
                     
-
                         {{-- <a class="btn btn-primary" href="{{ route('comment.create' ) }}">{{ __('Add Comment') }}</a> --}}
                     </div>
 
@@ -142,11 +149,12 @@
 @endsection
 <script>
     function myFunction(message_id) {
-        var x = document.getElementById("comment-form" + message_id);
-        if (x.style.display == "none") {
+        var x = ;
+        if (x.style.display == "block") {
             x.style.display = "block";
         } else {
             x.style.display = "none";
         }
     }
+
 </script>

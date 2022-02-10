@@ -37,7 +37,7 @@ class HomeController extends Controller
     public function home()
     {
         //nested eager loading
-        $messages = Message::with('user', 'comments.user')->latest()->paginate(4);
+        $messages = Message::with('user', 'comments.user')->latest()->paginate(10);
         
         //eager loading
         //$messages =  Message::with('user', 'comment.user')->get();

@@ -101,6 +101,6 @@ class CommentController extends Controller
     {
         $comment = Comment::find($id); 
         $comment->delete();
-        return redirect()->route('home')->with('message', 'Your message have been updated with succes'); 
+        return redirect()->route('home')->with('message', 'Your comment have been deleted with succes'); 
     }
 }

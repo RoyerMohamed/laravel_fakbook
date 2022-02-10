@@ -17,8 +17,16 @@ class MessageController extends Controller
         $messages = Message::where('content','LIKE', "%$search%")
         ->orWhere('tags','LIKE', "%$search%")
         ->with('user', 'comments.user')->latest()->paginate(10);
-        //dd($messages);
-        return view("home", compact("messages"));
+        if($messages){
+            //return page with messages 
+            dd($messages); 
+            return view("home", compact("messages"));
+
+        }else{
+            //return error page
+            dd($messages); 
+            return view("error");
+        }
     }
 
 
@@ -36,6 +44,7 @@ class MessageController extends Controller
         ]);
         $user = Auth::user();
         $message = new Message();
+        $this->authorize('create' , $message); 
         $message->content = $request['content'];
         $message->tags = $request['tags'];
         $message->image = $request['image'];
@@ -68,7 +77,7 @@ class MessageController extends Controller
             "content" => "required|min:10|max:500",
             "tags" => "required|min:3|max:50",
         ]);
-        //verif 
+        $this->authorize('update' , $message); 
         if ($request->input('content') !== $message->content) {
             $message->content = $request->input('content');
             $message->tags = $request->input('tags');
@@ -100,6 +109,7 @@ class MessageController extends Controller
      */
     public function destroy($id)
     {
+    
         $message = Message::find($id);
         $message->delete();
         return redirect()->back()->with('message', "Your message have been deleted with succes");
